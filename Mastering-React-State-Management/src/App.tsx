@@ -1,32 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React from "react"
 
-function App() {
-  const [count, setCount] = useState(0)
+function NameList() {
+  const [list, setList] = React.useState(["Khalid", "Alex", "Mitchell"])
+  const [name, setName] = React.useState("")
+
+  function addNameToList() {
+    setList([...list, name])
+    setName("")
+  }
+
+  function removeNameFromList() {
+    setList((removeName) => [...removeName.slice(0,-1)])
+
+  }
+
+  return (
+    <div>
+      <ul>
+        {list.map((name) => (
+          <li key={name}>{name}</li>
+        ))}
+      </ul>
+      <button onClick={removeNameFromList}>Delete Name</button>
+      <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      <button onClick={addNameToList}>Add Name</button>
+    </div>
+  )
+}
+
+function Counter() {
+
+  const[count, setCount] = React.useState(10)
+
+  function addOneToCount() {
+    setCount(count + 1)
+  }
+
+  function subtractOneFromCount() {
+    setCount(count - 1)
+  }
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button onClick={subtractOneFromCount}>-</button>
+      <button>Count = {count}</button>
+      <button onClick={addOneToCount}>+</button>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <div>
+      <NameList />
+      <Counter />
     </div>
   )
 }
