@@ -1,34 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React from "react"
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
+  // first scenario to using the React useRef hook: to get a reference to an HTML element
+  React.useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [])
+
+  const idRef = React.useRef(1)
+  
+  const idCounter = function() {
+    idRef.current = idRef.current + 1 
+  }
+
+  const [names, setNames] = React.useState<{id: number; name: string}[]>([{id: idRef.current++, name: "Khalid"}, {id: idRef.current++, name: "Jane"}])
+
+  const onAddName = function() {
+    if (inputRef.current) {
+      setNames([...names, {id: idRef.current++, name: inputRef.current.value}])
+      inputRef.current.value = ""
+    }
+  }
   return (
-    <div className="App">
+    <div>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {names.map((name) => (
+          <div key={name.name}>{name.id} - {name.name}</div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <input type="text" ref={inputRef} /> 
+      <button onClick={onAddName}>Add Name</button>
     </div>
   )
 }
-
-export default App
