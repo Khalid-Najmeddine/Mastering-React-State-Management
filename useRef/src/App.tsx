@@ -16,6 +16,7 @@ export default function App() {
     idRef.current = idRef.current + 1 
   }
 
+  // second scenario to using the React useRef hook: to maintain state without doing any updates
   const [names, setNames] = React.useState<{id: number; name: string}[]>([{id: idRef.current++, name: "Khalid"}, {id: idRef.current++, name: "Jane"}])
 
   const onAddName = function() {
