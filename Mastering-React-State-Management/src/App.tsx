@@ -11,7 +11,6 @@ function NameList() {
 
   function removeNameFromList() {
     setList((removeName) => [...removeName.slice(0,-1)])
-
   }
 
   return (
