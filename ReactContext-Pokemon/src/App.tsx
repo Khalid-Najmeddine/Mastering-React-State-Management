@@ -1,50 +1,46 @@
-import React, {useState, useEffect, createContext, useContext} from "react"
+import {PokemonProvider, usePokemon} from "./pokemonStore"
 
-interface Pokemon {
-  id: number
-  name: string
-  type: string[]
-  hp: number
-  attack: number
-  defense: number
-  special_defense: number
-  special_attack: number
-  speed: number
-}
-
-function usePokemonSource(): {pokemon: Pokemon[]} {
-  const[pokemon, setPokemon] = React.useState<Pokemon[]>([])
-
-  React.useEffect(() => {
-    fetch("/pokemon.json").then((response) => response.json()).then((data) => setPokemon(data))
-  }, [])
-
-  return {pokemon}
-}
-
-const PokemonContext = React.createContext<ReturnType<typeof usePokemonSource> | undefined>(undefined)
-
-function usePokemon() {
-  return React.useContext(PokemonContext)! // ! tells typescript that usePokemon() will always return a value of PokemonContext that will never be undefined
+function SearchBox() {
+  const {search, setSearch} = usePokemon()
+  return (
+    <input 
+      placeholder="Search for a Pokemon inside the National Pokedex"
+      className="mt-3 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-800 focus:ring-indigo-800 sm:text-lg p-2 "
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
+  )
 }
 
 function PokemonList() {
   const {pokemon} = usePokemon()
 
   return (
-    <div>
+    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
       {pokemon.map((mapPokemon) => (
-        <div key={mapPokemon.id}>{mapPokemon.name}</div>
+        <li key={mapPokemon.id} className="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
+          <div className="flex-1 flex flex-col p-8">
+            <img 
+              className="w-32 h-32 flex-shrink-0 mx-auto bg-black rounded-full"
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mapPokemon.id}.png`}
+              alt = ""
+            />
+            <h3 className="mt-6 text-gray-900 text-sm font-medium">{mapPokemon.name}</h3>
+          </div>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
 
 export default function App() {
 
   return (
-    <PokemonContext.Provider value={usePokemonSource()}>
-      <PokemonList />
-    </PokemonContext.Provider>
+    <PokemonProvider>
+      <div className="mx-auto max-w-3xl">
+        <SearchBox />
+        <PokemonList />
+      </div>
+    </PokemonProvider>
   )
 }
