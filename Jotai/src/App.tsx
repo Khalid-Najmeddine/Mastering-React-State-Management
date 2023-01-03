@@ -1,34 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import {useAtom, useAtomValue} from "jotai"
+import {searchAtom, sortedPokemonAtom} from "./pokemonStore"
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function SearchBox() {
+  const [search, setSearch] = useAtom(searchAtom)
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <input
+      className="mt-3 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-800 focus:ring-indigo-800 sm:text-lg p-2"
+      placeholder="Search"
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
+  );
 }
 
-export default App
+function PokemonList() {
+  const pokemon = useAtomValue(sortedPokemonAtom)
+  return (
+    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+      {pokemon.map((mapPokemon) => (
+        <li
+          key={mapPokemon.id}
+          className="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
+        >
+          <div className="flex-1 flex flex-col p-8">
+            <img
+              className="w-32 h-32 flex-shrink-0 mx-auto bg-black rounded-full"
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mapPokemon.id}.png`}
+              alt=""
+            />
+            <h3 className="mt-6 text-gray-900 text-sm font-medium">{mapPokemon.name}</h3>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+function App() {
+  return (
+    <div className="mx-auto max-w-3xl">
+      <SearchBox />
+      <PokemonList />
+    </div>
+  );
+}
+
+export default App;
